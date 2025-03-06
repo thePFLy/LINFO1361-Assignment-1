@@ -21,8 +21,8 @@ def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
     column_size = len(clues[0])
 
 
-    x1  = VarArray(size=[row_size, column_size], dom=range(column_size))
-    x2 = VarArray(size=[row_size, column_size], dom=range(column_size))
+    x1  = VarArray(size=[row_size, column_size], dom=range(0,column_size+1))
+    x2 = VarArray(size=[row_size, column_size], dom=range(0,column_size+1))
     
     
     satisfy(
@@ -36,6 +36,7 @@ def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
     
     # constraints 3 - Tuples unique 
     # J'ai pas encore la contriante 
+    #[AllDifferent(x1[i][j], x2[i][j]) for i in range(row_size) for j in range(column_size)],
     
     # constraints 4 - respect clue
     [x1[i][j] == clues[i][j][0] for i in range(row_size) for j in range(column_size) if clues and clues[i][j][0] > 0],
