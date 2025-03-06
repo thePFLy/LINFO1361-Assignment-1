@@ -6,34 +6,37 @@ def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
     column_size = len(clues[0])
 
 
-    x = VarArray(size=[row_size, column_size], dom=lambda i, j: [(a, b) for a in range(1, column_size) for b in range(1, column_size)])
+    x = VarArray(size=[row_size, column_size], dom=lambda i, j: [(a, b) for a in range(1, column_size+1) for b in range(1, column_size+1)])
 
     satisfy(
     # constraints 1
-    [AllDifferent(x[i,:][0]) for i in range(row_size)],
+    [AllDifferent(x[i,:]) for i in range(row_size)],
     # constraints 2
-    [AllDifferent(x[i,:][1]) for i in range(row_size)],
+    [AllDifferent(x[i,:]) for i in range(row_size)],
     # constraints 3
-    [AllDifferent(x[:, j][0]) for j in range(column_size)],
+    [AllDifferent(x[:, j]) for j in range(column_size)],
     # constraints 4
-    [AllDifferent(x[:, j][1]) for j in range(column_size)],
+    [AllDifferent(x[:, j]) for j in range(column_size)],
     # constraints 5
     [AllDifferent(x[i][j]) for i in range(row_size) for j in range(column_size)],
-    # constraints 
-    [x[i][j] == clues[i][j] for i in range(row_size) for j in range(column_size) if clues and clues[i] != (0,0) and clues[j] != (0,0)]
+    AllDifferent(x),
+    # constraints 6
+    [x[i][j] == clues[i][j] for i in range(row_size) for j in range(column_size) if clues and clues[i][j] != (0,0)]
     )
-    
-    print(row_size, column_size)
-    print(clues)
-    print(x)
+
 
     if solve(solver=CHOCO) is SAT:
         print("SATISFIABLE")
         print(values(x))
     else:
         print("UNSATISFIABLE")
+    
+    return None
 
-    return x
+def solve_tapestry_b(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
+    
+    return None
+
 
 def verify_format(solution: list[list[(int, int)]], n: int):
     validity = True
