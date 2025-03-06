@@ -4,11 +4,36 @@ from pycsp3 import *
 def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
     # Put your code here
     row_size = len(clues)
-    column_size = len(clue[0])
+    column_size = len(clues[0])
+
+    x = VarArray(size=[row_size, column_size], dom=range(1, row_size))
+
+    satisfy(
+    # constraints 1
+    [AllDifferent(x[i,:][0]) for i in range(row_size)],
+    # constraints 2
+    [AllDifferent(x[i,:][1]) for i in range(row_size)],
+    # constraints 3
+    [AllDifferent(x[:, j][0]) for j in range(column_size)],
+    # constraints 4
+    [AllDifferent(x[:, j][1]) for j in range(column_size)],
+    # constraints 5
+    [AllDifferent(x[i][j]) for i in range(row_size) for j in range(column_size)],
+    # constraints 
+    [x[i][j] == clues[i][j] for i in range(row_size) for j in range(column_size) if clues and clues[i] != (0,0) and clues[j] != (0,0)]
+    )
     
     print(row_size, column_size)
     print(clues)
-    return None
+    print(x)
+
+    if solve(solver=CHOCO) is SAT:
+        print("SATISFIABLE")
+        print(values(x))
+    else:
+        print("UNSATISFIABLE")
+
+    return x
 
 def verify_format(solution: list[list[(int, int)]], n: int):
     validity = True
