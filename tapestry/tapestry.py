@@ -1,16 +1,16 @@
 from pycsp3 import *
 
 
-def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
+def solve_tapestry_bis(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
     row_size = len(clues)
     column_size = len(clues[0])
 
 
     x = VarArray(size=[row_size, column_size], dom=lambda i, j: [(a, b) for a in range(1, column_size+1) for b in range(1, column_size+1)])
-
+    
     satisfy(
     # constraints 1
-    [AllDifferent(x[i,:]) for i in range(row_size)],
+    [AllDifferent(x[i,:][0]) for i in range(row_size)],
     # constraints 2
     [AllDifferent(x[i,:]) for i in range(row_size)],
     # constraints 3
@@ -33,8 +33,59 @@ def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
     
     return None
 
-def solve_tapestry_b(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
+def varArr_2_arrTup(x1:VarArray, x2:VarArray):
+    matrix1 = values(x1)
+    matrix2 = values(x2)
+    new_arr_tup = []
+    n = len(matrix1) 
+    for i in range (n):
+        new_arr = []
+        for j in range (n):
+            new_arr += [(matrix1[i][j],matrix2[i][j])]
+        new_arr_tup += [new_arr]
+    return new_arr_tup
+
+
+def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
+    print(clues)
     
+    row_size = len(clues)
+    column_size = len(clues[0])
+
+
+    x1  = VarArray(size=[row_size, column_size], dom=range(column_size))
+    x2 = VarArray(size=[row_size, column_size], dom=range(column_size))
+    
+    
+    satisfy(
+    # constraints 1 -  Unique on row
+    [AllDifferent(x1[i,:]) for i in range(row_size)],
+    [AllDifferent(x2[i,:]) for i in range(row_size)],
+    
+    # constraints 2 - Unique on column
+    [AllDifferent(x1[:,j]) for j in range(row_size)],
+    [AllDifferent(x2[:,j]) for j in range(row_size)],
+    
+    # constraints 3 - Tuples unique 
+    # J'ai pas encore la contriante 
+    
+    # constraints 4 - respect clue
+    [x1[i][j] == clues[i][j][0] for i in range(row_size) for j in range(column_size) if clues and clues[i][j][0] > 0],
+    [x2[i][j] == clues[i][j][1] for i in range(row_size) for j in range(column_size) if clues and clues[i][j][1] > 0],    
+    )
+
+
+    if solve(solver=CHOCO) is SAT:
+        print("SATISFIABLE")
+        print(values(x1))
+        print(values(x2))
+        solution = varArr_2_arrTup(x1,x2)
+        print(solution)
+        return solution
+         
+    else:
+        print("UNSATISFIABLE")
+            
     return None
 
 
