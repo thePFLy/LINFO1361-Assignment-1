@@ -3,8 +3,11 @@ from pycsp3 import *
 
 def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
     # Put your code here
-    x= VarArray()
-
+    row_size = len(clues)
+    column_size = len(clue[0])
+    
+    print(row_size, column_size)
+    print(clues)
     return None
 
 def verify_format(solution: list[list[(int, int)]], n: int):
