@@ -2,11 +2,11 @@ from pycsp3 import *
 
 
 def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
-    # Put your code here
     row_size = len(clues)
     column_size = len(clues[0])
 
-    x = VarArray(size=[row_size, column_size], dom=range(1, row_size))
+
+    x = VarArray(size=[row_size, column_size], dom=lambda i, j: [(a, b) for a in range(1, column_size) for b in range(1, column_size)])
 
     satisfy(
     # constraints 1
