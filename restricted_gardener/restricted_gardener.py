@@ -11,11 +11,7 @@ def solve_restricted_gardener(instruction: int, n:int) -> list[int]:
    
 
     # constraint 2 (vision des haies: si instruction 3 -> 3 haies (ni + ni -) doivent être visibles)
-    Sum(
-            # i (haie) visible si > haies précédentes
-            [x[i] > x[j] for j in range(i)] for i in range(1, n)
-        # 1ere haie tjrs visible car devant
-        ) + 1 == instruction
+    Sum((x[i] > Maximum(x[j] for j in range(i))) for i in range(1, n)) + 1 == instruction
     )
 
     if solve() is SAT:
