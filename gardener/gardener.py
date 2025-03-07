@@ -1,9 +1,27 @@
 from pycsp3 import *
 
+    # Instructions :
+    # [ 4  1  3  2 ] -> vue de haut: 4 haies doivent être vues première colonne, 1 deuxième colonne, 3 ...
+    # [ 2  3  2  1 ] -> vue de gauche: 2 ..
+    # [ 2  1  2  3 ] -> vue de droite
+    # [ 1  2  2  2 ] -> bas
+
+    # solution :
+    # [ 1  4  2  3 ]
+    # [ 2  1  3  4 ]
+    # [ 3  2  4  1 ]
+    # [ 4  3  1  2 ]
+
+
+    #variables : n*n
+    #domaine: entre 1 et n
+    #contraintes:
+    # 1 hauteur par colonne + par ligne (2 contraintes)
+    # nbr définis de haies visibles depuis chaque coté (4 contraintes ?)
+
 
 def solve_gardener(instructions: list[list[int]]) -> list[list[int]]:
     # Put your code here
-    
     return None
 
 def verify_format(solution: list[list[int]], n: int):
