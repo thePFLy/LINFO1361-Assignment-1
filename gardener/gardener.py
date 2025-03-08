@@ -20,9 +20,37 @@ from pycsp3 import *
     # nbr définis de haies visibles depuis chaque coté (4 contraintes ?)
 
 
+
 def solve_gardener(instructions: list[list[int]]) -> list[list[int]]:
-    # Put your code here
-    return None
+    g_size = len(instructions[0])
+    x = VarArray(size=[g_size, g_size], dom=range(1, g_size+1))
+
+
+    satisfy(
+        # uniques (colonne + ligne)
+        [AllDifferent(x[i]) for i in range(g_size)],
+        [AllDifferent(x[:, j]) for j in range(g_size)],
+
+        # je compte en fait le nbr de haies visibles depuis le coté correspondant (somme avec k++ -> comparer avec instruction )
+        # gauche
+        [Sum([x[i, k] == Maximum(x[i, :k+1]) for k in range(g_size)]) == instructions[1][i] for i in range(g_size)],
+
+        # droite
+        [Sum([x[i, k] == Maximum(x[i, k:]) for k in range(g_size)]) == instructions[2][i] for i in range(g_size)],
+
+        # haut
+        [Sum([x[k, j] == Maximum(x[:k+1, j]) for k in range(g_size)]) == instructions[0][j] for j in range(g_size)],
+
+        # bas
+        [Sum([x[k, j] == Maximum(x[k:, j]) for k in range(g_size)]) == instructions[3][j] for j in range(g_size)]
+    )
+
+    if solve(solver=CHOCO) is SAT:
+        print("ok")
+        return values(x)
+    else:
+        print("no ok")
+        return None
 
 def verify_format(solution: list[list[int]], n: int):
     validity = True
