@@ -13,6 +13,12 @@ def varArr_2_arrTup(x:VarArray):
     return new_arr_tup
 
 def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
+    '''
+    Takes a matrix of tuples as input and return a mtrix of tuples where the following are respected:
+    - Each element of the tuples is unique in its row
+    - Each element of the tuple is unique in its column
+    - Each tuples is unique in the matrix
+    '''
     print("clues are \n")
     for element in clues:
         print(element)
@@ -23,23 +29,21 @@ def solve_tapestry(clues: list[list[(int, int)]]) -> list[list[(int, int)]]:
     x = VarArray(size=[row_size, column_size, 2] , dom=range(1,column_size+1))    
     
     satisfy(
-        # Constraint 1 - Row are different
+        # Constraint 1 - Shape is unique in row, Color is unique in row
         [AllDifferent(x[i,:,0]) for i in range(row_size)],
         [AllDifferent(x[i,:,1]) for i in range(row_size)],
-        # Constraint 2 - Columun are different
+        # Constraint 2 - Shape is unique in column, Color is unique in column
         [AllDifferent(x[:,j,0]) for j in range(row_size)],
         [AllDifferent(x[:,j,1]) for j in range(row_size)],
-        # Constraint 3 - in coming
+        # Constraint 3 - Tuples are unique in matrix
         [x[i][j] != x[k][l] for i in range(n) for j in range(n) for k in range(n) for l in range(n) if (i!=k and j!=l)],
-        # Constraint 4
+        # Constraint 4 - Respect clues
         [x[i][j][0] == clues[i][j][0] for i in range(row_size) for j in range(column_size) if clues and clues[i][j][0] > 0],
         [x[i][j][1] == clues[i][j][1] for i in range(row_size) for j in range(column_size) if clues and clues[i][j][1] > 0]
     )
 
     if solve(solver=CHOCO) is SAT:
         print("SATISFIABLE")
-        
-        print("x is \n".format(values(x)))
         solution = varArr_2_arrTup(x)
         print("solution is :\n")
         for element in solution:
