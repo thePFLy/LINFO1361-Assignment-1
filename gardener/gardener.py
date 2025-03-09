@@ -27,21 +27,24 @@ def solve_gardener(instructions: list[list[int]]) -> list[list[int]]:
 
 
     satisfy(
-        # uniques (colonne + ligne)
+        # Each hedge is unique in a row
         [AllDifferent(x[i]) for i in range(g_size)],
+        # Each hedge is unique in a column
         [AllDifferent(x[:, j]) for j in range(g_size)],
 
-        # je compte en fait le nbr de haies visibles depuis le coté correspondant (somme avec k++ -> comparer avec instruction )
-        # gauche
+        # Check if hedge is the highest between current side and its position (visibility). If yes, sum +1. 
+        # Number of visible height from current side [i] = Instruction[i]
+        
+        # Left Side Instructions
         [Sum([x[i, k] == Maximum(x[i, :k+1]) for k in range(g_size)]) == instructions[1][i] for i in range(g_size)],
 
-        # droite
+        # Right Side Instructions
         [Sum([x[i, k] == Maximum(x[i, k:]) for k in range(g_size)]) == instructions[2][i] for i in range(g_size)],
 
-        # haut
+        # Upper Side Instructions
         [Sum([x[k, j] == Maximum(x[:k+1, j]) for k in range(g_size)]) == instructions[0][j] for j in range(g_size)],
 
-        # bas
+        # Bottom Side Instructions
         [Sum([x[k, j] == Maximum(x[k:, j]) for k in range(g_size)]) == instructions[3][j] for j in range(g_size)]
     )
 
