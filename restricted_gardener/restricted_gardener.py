@@ -2,15 +2,14 @@ from pycsp3 import *
 
 
 def solve_restricted_gardener(instruction: int, n:int) -> list[int]:
-    # tableau variables
+    # variable list
     x = VarArray(size=n, dom=range(1, n+1))
 
     satisfy(
-    # constraint 1 (les hauteurs ne doivent pas être les mêmes)
+    # constraint 1 - Each hedge has a unique height
     [AllDifferent(x)],
-   
 
-    # constraint 2 (vision des haies: si instruction 3 -> 3 haies (ni + ni -) doivent être visibles)
+    # constraint 2 - Check if x[i] is visible between beggining and its position. If yes, counted as +1. Number of visible hedges must equals instructions
     Sum((x[i] > Maximum(x[j] for j in range(i))) for i in range(1, n)) + 1 == instruction
     )
 
